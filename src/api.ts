@@ -37,9 +37,6 @@ export default class Api {
 
     public auth(): Promise<Result> {
         const body = new FormData
-        body.append("username", this.username)
-        body.append("password", this.hashedPassword)
-
         return this.call({ method: "POST", endpoint: "auth", body, forcedErrorMessage: "Invalid username or password" })
     }
 
