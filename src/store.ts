@@ -1,4 +1,4 @@
-import { createStore, useStore as VuexUseStore } from "vuex"
+import { createStore, useStore as vuexUseState } from "vuex"
 import Api from "./api"
 
 type State = { api: Api | null }
@@ -14,4 +14,4 @@ export const store = createStore<State>({
     },
 })
 
-export const useStore = () => VuexUseStore<State>()
+export const useStore = () => vuexUseState<State>()
