@@ -1,9 +1,39 @@
 <script setup lang="ts">
+import { reactive } from "vue"
+import { User } from "../types/user"
+import { useRouter } from "vue-router"
+import { useStore } from "../store"
+import Api from "../api"
+import Header from "../components/Header.vue"
 
+const router = useRouter()
+const store = useStore()
+
+const user = reactive<User>({
+    username: "",
+    password: "",
+})
+
+const submit = async () => {
+    const api = new Api(user)
+    const result = await api.auth()
+
+    if (!result.success) {
+        alert(result.errorMessage)
+        return
+    }
+
+    store.commit("login", { api })
+    await router.push("/admin")
+}
 </script>
 
 <template>
     <div>
-        <h1>Hello world!</h1>
+        <Header title="Login" />
+
+        <input v-model="user.username" type="text" placeholder="Username" />
+        <input v-model="user.password" type="password" placeholder="Password" />
+        <button @click="submit">Submit</button>
     </div>
 </template>

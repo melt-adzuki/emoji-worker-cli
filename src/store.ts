@@ -1,14 +1,17 @@
-import { createStore } from "vuex"
+import { createStore, useStore as VuexUseStore } from "vuex"
+import Api from "./api"
 
-const store = createStore({
+type State = { api: Api | null }
+
+export const store = createStore<State>({
     state: {
-        count: 1
+        api: null,
     },
     mutations: {
-        increment(state) {
-            state.count *= 2
-        }
+        login(state, payload) {
+            state.api = payload.api
+        },
     },
 })
 
-export default store
+export const useStore = () => VuexUseStore<State>()
