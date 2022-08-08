@@ -1,11 +1,10 @@
-import { User } from "./types/user"
+import { User, Emojis } from "./types"
 import hash from "hash.js"
-
-type Result<T = Response> =
-    | { success: true, response: T }
-    | { success: false, errorMessage: string }
+import { useToast } from "vue-toastification"
 
 export default class Api {
+    private readonly toast = useToast()
+
     public readonly username: string
     public readonly hashedPassword: string
 
@@ -14,7 +13,12 @@ export default class Api {
         this.hashedPassword = hash.sha512().update(password).digest("hex")
     }
 
-    private async call({ method, endpoint, body, forcedErrorMessage }: { method: string, endpoint: string, body?: FormData, forcedErrorMessage?: string }): Promise<Result> {
+    private makeError(message: string): Error {
+        this.toast.error(message)
+        return new Error(message)
+    }
+
+    private async call({ method, endpoint, body, forcedErrorMessage }: { method: string, endpoint: string, body?: FormData, forcedErrorMessage?: string }): Promise<Response> {
         if (body) {
             body.append("username", this.username)
             body.append("password", this.hashedPassword)
@@ -25,23 +29,48 @@ export default class Api {
                 `https://emoji-worker.adzuki.workers.dev/${endpoint}`,
                 { method, body }
             )
-            if (response.status === 200) return { success: true, response }
+            if (response.status === 200) return response
         }
 
         catch (error) {
-            return { success: false, errorMessage: forcedErrorMessage ?? String(error) }
+            throw this.makeError(forcedErrorMessage ?? String(error))
         }
 
-        return { success: false, errorMessage: forcedErrorMessage ?? "Failed to fetch API" }
+        throw this.makeError(forcedErrorMessage ?? "Failed to fetch API")
     }
 
-    public auth(): Promise<Result> {
+    public async auth(): Promise<void> {
         const body = new FormData
-        return this.call({ method: "POST", endpoint: "auth", body, forcedErrorMessage: "Invalid username or password" })
+        await this.call({ method: "POST", endpoint: "auth", body, forcedErrorMessage: "Invalid username or password" })
     }
 
-    public async list(): Promise<Result<any>> {
+    public async list(): Promise<Emojis> {
         const result = await this.call({ method: "GET", endpoint: "list" })
-        return result.success ? { success: true, response: JSON.parse(await result.response.text()) } : result
+        return JSON.parse(await result.text())
+    }
+
+    public async add(content: string): Promise<Emojis> {
+        const body = new FormData
+        body.append("content", content)
+        
+        const result = await this.call({ method: "POST", endpoint: "add", body })
+        return JSON.parse(await result.text())
+    }
+
+    public async move(from: number, to: number): Promise<Emojis> {
+        const body = new FormData
+        body.append("from", String(from))
+        body.append("to", String(to))
+        
+        const result = await this.call({ method: "POST", endpoint: "move", body })
+        return JSON.parse(await result.text())
+    }
+
+    public async delete(index: number): Promise<Emojis> {
+        const body = new FormData
+        body.append("index", String(index))
+        
+        const result = await this.call({ method: "POST", endpoint: "delete", body })
+        return JSON.parse(await result.text())
     }
 }

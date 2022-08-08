@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive } from "vue"
-import { User } from "../types/user"
+import { User } from "../types"
 import { useRouter } from "vue-router"
 import { useStore } from "../store"
 import Api from "../api"
@@ -16,12 +16,7 @@ const user = reactive<User>({
 
 const submit = async () => {
     const api = new Api(user)
-    const result = await api.auth()
-
-    if (!result.success) {
-        alert(result.errorMessage)
-        return
-    }
+    await api.auth()
 
     store.commit("login", { api })
     await router.push("/admin")
