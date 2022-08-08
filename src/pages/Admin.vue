@@ -13,10 +13,7 @@ const router = useRouter()
 const store = useStore()
 
 const api = computed(() => {
-    if (!store.state.api) {
-        router.push("/")
-        throw new Error("No API")
-    }
+    if (!store.state.api) router.push("/")
     return store.state.api
 })
 
@@ -31,24 +28,24 @@ function addEmoji(): void {
     const newEmoji = prompt("Enter emoji")
     if (newEmoji === "" || !newEmoji) return
 
-    api.value.add(newEmoji)
+    api.value?.add(newEmoji)
         .then(result => emojis.value = result.value)
 }
 
 function deleteEmoji(index: number): void {
-    api.value.delete(index)
+    api.value?.delete(index)
         .then(result => emojis.value = result.value)
 }
 
 function onChange(event: any): void {
-    api.value.move(event.moved.oldIndex, event.moved.newIndex)
+    api.value?.move(event.moved.oldIndex, event.moved.newIndex)
         .then(result => emojis.value = result.value)
 }
 // endregion
 
 
 // region Initialization
-api.value.list()
+api.value?.list()
     .then(result => emojis.value = result.value)
 // endregion
 </script>
@@ -76,6 +73,11 @@ api.value.list()
 </template>
 
 <style scoped>
+.emojis, .actions {
+    opacity: 0;
+    animation: fadeIn 0.25s linear normal forwards;
+}
+
 .emojis {
     background-color: white;
     border-radius: 1rem;
@@ -154,5 +156,14 @@ api.value.list()
 .actions > .button > img {
     width: 3rem;
     height: 3rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 </style>
