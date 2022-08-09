@@ -56,7 +56,7 @@ api.value?.list()
     <Container>
         <draggable class="emojis" v-model="emojis" @change="onChange" item-key="id" v-bind="{ disabled: !isDraggable, animation: 250 }" >
             <template #item="{ element, index }">
-                <div class="element" :class="isDraggable ? 'draggable' : ''">
+                <div class="element" :class="{ draggable: isDraggable }">
                     <span>{{ element }}</span>
                     <span v-if="!isDeleteMode">{{ index }}</span>
                     <button v-else class="button" @click="deleteEmoji(index)"><img src="../assets/icon-close.svg"></button>
