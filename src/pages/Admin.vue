@@ -149,7 +149,7 @@ api.value?.list()
     border-bottom-right-radius: 1rem;
 }
 
-.actions > .button:not(last-child) {
+.actions > .button:not(:last-child) {
     border-right: 1px solid #eee;
 }
 
