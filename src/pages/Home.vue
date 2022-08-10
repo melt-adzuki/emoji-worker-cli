@@ -26,17 +26,15 @@ const submit = async () => {
 </script>
 
 <template>
-    <div>
-        <Header :src="headerImage" />
+    <Header :src="headerImage" />
 
-        <Container>
-            <div class="inner">
-                <input v-model="user.username" @keypress.enter="submit" type="text" placeholder="Username" />
-                <input v-model="user.password" @keypress.enter="submit" type="password" placeholder="Password" />
-                <button @click="submit">Submit</button>
-            </div>
-        </Container>
-    </div>
+    <Container>
+        <div class="inner">
+            <input v-model="user.username" @keypress.enter="submit" type="text" placeholder="Username" />
+            <input v-model="user.password" @keypress.enter="submit" type="password" placeholder="Password" />
+            <button @click="submit">Submit</button>
+        </div>
+    </Container>
 </template>
 
 <style scoped>
