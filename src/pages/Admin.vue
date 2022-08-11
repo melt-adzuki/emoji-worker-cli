@@ -66,8 +66,8 @@ api.value?.list()
 
         <div class="actions" v-if="emojis">
             <button class="button" @click="addEmoji"><img src="../assets/icon-add.svg"></button>
-            <button class="button" @click="(isDraggable = !isDraggable) && (isDeleteMode = false)" :class="isDraggable ? 'highlighted' : ''"><img src="../assets/icon-swap-vertical.svg"></button>
-            <button class="button" @click="(isDeleteMode = !isDeleteMode) && (isDraggable = false)" :class="isDeleteMode ? 'highlighted' : ''"><img src="../assets/icon-close.svg"></button>
+            <button class="button" @click="(isDraggable = !isDraggable) && (isDeleteMode = false)" :class="{ highlighted: isDraggable }"><img src="../assets/icon-swap-vertical.svg"></button>
+            <button class="button" @click="(isDeleteMode = !isDeleteMode) && (isDraggable = false)" :class="{ highlighted: isDeleteMode }"><img src="../assets/icon-close.svg"></button>
         </div>
     </Container>
 </template>
